@@ -24,7 +24,9 @@ class FileBrowseWidget(Input):
     class Media:
         js = (os.path.join(URL_FILEBROWSER_MEDIA, 'js/AddFileBrowser.js'), )
     
-    def __init__(self, attrs=None):
+    def __init__(self, attrs={}):
+        super(FileBrowseWidget, self).__init__(attrs)
+        
         self.directory = attrs.get('directory', '')
         self.extensions = attrs.get('extensions', '')
         self.format = attrs.get('format', '')
@@ -60,14 +62,14 @@ class FileBrowseFormField(forms.CharField):
     
     def __init__(self, max_length=None, min_length=None,
                  directory=None, extensions=None, format=None,
-                 *args, **kwargs):
+                 **kwargs):
         self.max_length, self.min_length = max_length, min_length
         self.directory = directory
         self.extensions = extensions
         if format:
             self.format = format or ''
             self.extensions = extensions or EXTENSIONS.get(format)
-        super(FileBrowseFormField, self).__init__(*args, **kwargs)
+        super(FileBrowseFormField, self).__init__(**kwargs)
     
     def clean(self, value):
         value = super(FileBrowseFormField, self).clean(value)
