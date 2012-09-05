@@ -39,6 +39,18 @@
             </td>
         {% endif %}
         
+        <!-- FILESELECT FOR MULTIFILEBROWSEFIELD -->
+        {% if query.pop == "4" and results_var.select_total %}
+            <td class="fb_icon">
+                <!-- Don't allow Folder to be selected -->
+                {% if file.filetype != 'Folder' %}
+                    <button class="button fb_selectlink" onclick="FileSubmitMultiple('{{ file.url_save }}', '{{ file.url_thumbnail }}', '{{ file.filetype }}');">{% trans "Select" %}</button>
+                {% else %}
+                    &nbsp;
+                {% endif %}
+            </td>
+        {% endif %}
+        
         <!-- FILEICON -->
         <td>
             <img src="{{ settings_var.URL_FILEBROWSER_MEDIA }}img/filebrowser_type_{{ file.filetype|lower }}.gif" />

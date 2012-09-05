@@ -8,6 +8,11 @@
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% custom_admin_media_prefix %}css/changelists.css" />
     <link rel="stylesheet" type="text/css" href="{{ settings_var.URL_FILEBROWSER_MEDIA }}css/filebrowser.css" />
+    {% if query.pop %}
+    <style type="text/css">
+        #header { display: none; }
+    </style>
+    {% endif %}
 {% endblock %}
 
 <!-- JAVASCRIPTS -->
@@ -23,6 +28,9 @@
     {% endifequal %}
     {% ifequal query.pop '3' %} <!-- CKeditor (former "FCKeditor") -->
     <script language="javascript" type="text/javascript" src="{{ settings_var.URL_FILEBROWSER_MEDIA }}js/FB_CKEditor.js"></script>
+    {% endifequal %}
+    {% ifequal query.pop '4' %} <!-- MultiFileBrowseField -->
+    <script language="javascript" type="text/javascript" src="{{ settings_var.URL_FILEBROWSER_MEDIA }}js/FB_MultiFileBrowseField.js"></script>
     {% endifequal %}
     {{ media }}
     

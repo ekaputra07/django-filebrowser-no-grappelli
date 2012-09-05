@@ -36,6 +36,11 @@
     <script language="javascript" type="text/javascript" src="{{ settings_var.URL_FILEBROWSER_MEDIA }}js/FB_CKEditor.js"></script>
     {% endifequal %}
     
+    {% ifequal query.pop '4' %}
+    <!-- FileBrowseField -->
+    <script language="javascript" type="text/javascript" src="{{ settings_var.URL_FILEBROWSER_MEDIA }}js/FB_MultiFileBrowseField.js"></script>
+    {% endifequal %}
+    
     {{ media }}
 {% endblock %}
 
@@ -58,6 +63,7 @@
                 {% ifequal query.pop '1' %}<th></th>{% endifequal %}
                 {% ifequal query.pop '2' %}<th></th>{% endifequal %}
                 {% ifequal query.pop '3' %}<th></th>{% endifequal %}
+                {% ifequal query.pop '4' %}<th></th>{% endifequal %}
                 
                 <!-- Filename/Dimensions  -->
                 <th>{% trans 'Name' %}</th>
@@ -105,6 +111,18 @@
                     {% selectable image_version.filetype query.type %}
                     {% if selectable %}
                         <button class="button fb_selectlink" onclick="OpenFile(ProtectPath('{{ image_version.url_save|escapejs }}'));return false;">{% trans "Select" %}</button>
+                    {% else %}
+                        &nbsp;
+                    {% endif %}
+                </td>
+                {% endifequal %}
+                
+                <!-- Fileselect for MultipleFileBrowseField -->
+                {% ifequal query.pop '4' %}
+                <td class="fb_icon">
+                    {% selectable image_version.filetype query.type %}
+                    {% if selectable %}
+                        <button class="button fb_selectlink" onclick="FileSubmitMultiple('{{ image_version.url_save }}', '{{ image_version.url_thumbnail }}', '{{ image_version.filetype }}');">{% trans "Select" %}</button>
                     {% else %}
                         &nbsp;
                     {% endif %}

@@ -1,0 +1,42 @@
+{% load fb_versions %}
+{% load static %}
+<input id="{{ final_attrs.id }}" type="text" class="vFileBrowseField" name="{{ final_attrs.name }}" value="{{ value.path }}" /><a href="javascript:MultiFileBrowser.show('{{ final_attrs.id }}', '{% url fb_browse %}?pop=4{% if final_attrs.directory %}{% endif %}{% if final_attrs.format %}&amp;type={{ final_attrs.format }}{% endif %}');" class="fb_show">
+    <img src="{{ final_attrs.search_icon }}" alt="" />
+</a>
+{% ifequal value.filetype "Image" %}
+<p class="help" id="help_{{ final_attrs.id }}" style="border:1px dashed #ddd;padding:5px;">
+        {% for img in final_attrs.thumbs %}
+        <a href="javascript:;">
+            <img src="{% version img final_attrs.ADMIN_THUMBNAIL %}" class="preview" rel="{{img}}"/>
+        </a>
+        {% endfor %}
+</p>
+{% else %}
+<p class="help" id="help_{{ final_attrs.id }}"></p>
+{% endifequal %}
+
+<script type="text/javascript">
+//Drag and Drop actions
+$( "#help_{{ final_attrs.id }}" ).sortable({
+    stop: function(event, ui) {
+        var images = new Array();
+        $('#help_{{ final_attrs.id }} img').each(function(){
+            var src = $(this).attr('rel');
+            images.push(src);
+        });
+        
+        var str_images = images.join(',');
+        $('#{{ final_attrs.id }}').val(str_images);
+    }
+});
+</script>
+
+{% if final_attrs.DEBUG %}
+<p>
+    <strong>Path</strong> {{ value.path }}<br />
+    <strong>FileType</strong> {{ value.filetype }}<br /><br />
+    <strong>Directory</strong> {{ final_attrs.directory }}<br />
+    <strong>Extensions</strong> {{ final_attrs.extensions }}<br />
+    <strong>Format</strong> {{ final_attrs.format }}
+</p>
+{% endif %}

@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 # filebrowser imports
 from filebrowser.settings import *
 from filebrowser.base import FileObject
-from filebrowser.functions import url_to_path
+from filebrowser.functions import url_to_path, get_version_path
 
 
 class FileBrowseWidget(Input):
@@ -38,6 +38,8 @@ class FileBrowseWidget(Input):
     def render(self, name, value, attrs=None):
         if value is None:
             value = ""
+        if value != "" and not isinstance(value, FileObject):
+            value = FileObject(value)
         final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
         final_attrs['search_icon'] = URL_FILEBROWSER_MEDIA + 'img/filebrowser_icon_show.gif'
         final_attrs['directory'] = self.directory
@@ -51,6 +53,56 @@ class FileBrowseWidget(Input):
             except:
                 pass
         return render_to_string("filebrowser/custom_field.html", locals())
+
+
+class MultiFileBrowseWidget(Input):
+    input_type = 'text'
+    
+    class Media:
+        js = (
+            #os.path.join(URL_FILEBROWSER_MEDIA, 'js/jquery-1.7.1.min.js'),
+            os.path.join(URL_FILEBROWSER_MEDIA, 'js/jquery-ui-1.8.17.custom.min.js'),
+            os.path.join(URL_FILEBROWSER_MEDIA, 'js/AddMultiFileBrowser.js'),
+        )
+    
+    def __init__(self, attrs={}):
+        super(MultiFileBrowseWidget, self).__init__(attrs)
+        
+        self.directory = attrs.get('directory', '')
+        self.extensions = attrs.get('extensions', '')
+        self.format = attrs.get('format', '')
+        if attrs is not None:
+            self.attrs = attrs.copy()
+        else:
+            self.attrs = {}
+    
+    def render(self, name, value, attrs=None):
+        if value is None:
+            value = ""
+        if value != "" and not isinstance(value, FileObject):
+            value = FileObject(value)
+        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name)
+        final_attrs['search_icon'] = URL_FILEBROWSER_MEDIA + 'img/multi_filebrowser_icon_show.png'
+        final_attrs['directory'] = self.directory
+        final_attrs['extensions'] = self.extensions
+        final_attrs['format'] = self.format
+        final_attrs['ADMIN_THUMBNAIL'] = ADMIN_THUMBNAIL
+        final_attrs['DEBUG'] = DEBUG
+        final_attrs['thumbs'] = self.value_to_list(value.path)
+            
+        if value != "":
+            try:
+                final_attrs['directory'] = os.path.split(value.path_relative_directory)[0]
+            except:
+                pass
+        return render_to_string("filebrowser/custom_field_multi.html", locals())
+    
+    def value_to_list(self, value):
+        """ Parse comma sparated path to list of path"""
+        vals = value.split(',')
+        if vals:
+            return vals
+        return
 
 
 class FileBrowseFormField(forms.CharField):
